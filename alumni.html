@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alumni Directory — Shakuntalites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<meta name="theme-color" content="#0F1B2D"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/></noscript>
+<style>
+  :root {
+    --gold:#D4A843; --gold-light:#F0C96B; --gold-pale:#FDF3DC;
+    --cream:#FAF7F0; --brown-dark:#0B1E33; --brown-mid:#1B3A57;
+    --brown-light:#4A7291; --ink:#0F1B2D;
+    --film-grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  #pageTransition { position:fixed; inset:0; z-index:9000; pointer-events:none; background:linear-gradient(135deg,#05101C,#0F1B2D); clip-path:inset(0 0 100% 0); transition:clip-path 0.8s cubic-bezier(0.77,0,0.18,1); }
+  #pageTransition.reveal-in { clip-path:inset(0 0 0% 0); } #pageTransition.reveal-out { clip-path:inset(100% 0 0% 0); }
+
+  .fade-up { opacity:0; transform:translateY(36px); transition:opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+  .fade-up.in-view { opacity:1; transform:none; }
+
+  #magnetCursor { position:fixed; top:0; left:0; width:clamp(24px,3vw,40px); height:clamp(24px,3vw,40px); border-radius:50%; background:transparent; border:2px solid var(--gold); pointer-events:none; z-index:9999; transform:translate(-50%,-50%); opacity:0; transition:width 0.35s, height 0.35s, opacity 0.3s, border-color 0.3s; }
+  #magnetCursor.visible { opacity:1; } #magnetCursor.hovering { width:clamp(40px,5vw,64px); height:clamp(40px,5vw,64px); border-color:var(--gold-light); }
+  @media (hover:none) and (pointer:coarse) { #magnetCursor, #magnetTrail { display:none !important; } }
+  #magnetTrail { position:fixed; top:0; left:0; width:6px; height:6px; border-radius:50%; background:var(--gold-light); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:0; transition:opacity 0.3s; }
+  #magnetTrail.visible { opacity:0.7; }
+  #scrollBar { position:fixed; top:0; left:0; height:2px; width:0%; background:linear-gradient(90deg,#3D5D7A,#D4A843,#F0C96B,#D4A843); background-size:200% 100%; animation:gradShift 3s linear infinite; z-index:9999; transition:width 0.1s linear; }
+  @keyframes gradShift { 0%{background-position:0%} 100%{background-position:200%} }
+
+  html { scroll-behavior:smooth; }
+  body { background:var(--ink); color:var(--cream); font-family:'Inter',sans-serif; overflow-x:hidden; cursor:none; }
+  @media (hover:none) and (pointer:coarse) { body { cursor:auto !important; } }
+
+  /* NAV */
+  nav#mainNav { position:fixed; top:0; width:100%; z-index:100; padding:24px 60px; display:flex; justify-content:space-between; align-items:center; background:transparent !important; transition:all 0.5s; }
+  nav#mainNav.scrolled { background:rgba(10,7,3,0.85) !important; backdrop-filter:blur(20px); padding:14px 60px; border-bottom:1px solid rgba(212,168,67,0.08); box-shadow:0 4px 30px rgba(0,0,0,0.4); }
+  .nav-logo { font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700; color:var(--gold) !important; -webkit-text-fill-color:var(--gold) !important; letter-spacing:0.08em; text-decoration:none; z-index:101; transition:transform 0.3s !important; display:inline-block; }
+  .nav-logo:hover { transform:scale(1.05) translateY(-1px) !important; }
+  .nav-links { display:flex; gap:40px; list-style:none; }
+  .nav-links a { font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(250,247,240,0.5); text-decoration:none; transition:all 0.3s; position:relative; padding-bottom:4px; }
+  .nav-links a::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:1px; background:var(--gold); transition:all 0.3s; transform:translateX(-50%); }
+  .nav-links a:hover { color:var(--gold-light); } .nav-links a:hover::after { width:100%; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:none; padding:8px; border:none; background:transparent; z-index:200; }
+  .hamburger span { display:block; width:24px; height:2px; background:var(--gold); border-radius:2px; transition:all 0.35s; }
+  .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  .mobile-menu { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(8,5,2,0.97); backdrop-filter:blur(20px); z-index:150; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; opacity:0; pointer-events:none; transition:opacity 0.4s; }
+  .mobile-menu.open { opacity:1; pointer-events:all; }
+  .mobile-menu a { font-family:'Fraunces',serif; font-size:clamp(2rem,8vw,3rem); font-style:italic; color:rgba(250,247,240,0.35); text-decoration:none; transform:translateY(20px); opacity:0; transition:color 0.3s, transform 0.5s, opacity 0.5s; }
+  .mobile-menu.open a { opacity:1; transform:translateY(0); }
+  .mobile-menu.open a:nth-child(1){transition-delay:0.05s} .mobile-menu.open a:nth-child(2){transition-delay:0.10s}
+  .mobile-menu.open a:nth-child(3){transition-delay:0.15s} .mobile-menu.open a:nth-child(4){transition-delay:0.20s}
+  .mobile-menu.open a:nth-child(5){transition-delay:0.25s} .mobile-menu.open a:nth-child(6){transition-delay:0.30s}
+  .mobile-menu a:hover { color:var(--gold); }
+  .mobile-menu-close { position:absolute; top:28px; right:28px; width:44px; height:44px; border-radius:50%; border:1px solid rgba(212,168,67,0.25); background:rgba(212,168,67,0.06); color:var(--gold); font-size:1.3rem; display:flex; align-items:center; justify-content:center; cursor:none; transition:background 0.3s, transform 0.3s; }
+  .mobile-menu-close:hover { background:rgba(212,168,67,0.15); transform:rotate(90deg); }
+
+  /* HERO */
+  .page-hero { position:relative; min-height:55vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
+  .page-hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 40%, #3A1A00 0%, #0F1B2D 70%); }
+  .grain-overlay { display: none !important; position:absolute; inset:0; background-image:var(--film-grain); background-size:150px; opacity:0.4; mix-blend-mode:overlay; pointer-events:none; }
+  .hero-content { position:relative; z-index:2; padding:40px 20px; }
+  .eyebrow { display:inline-block; font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; padding:6px 18px; border:1px solid rgba(212,168,67,0.3); border-radius:100px; background:rgba(212,168,67,0.06); opacity:0; animation:fadeUp 0.8s 0.3s forwards; }
+  .hero-title { font-family:'Fraunces',serif; font-size:clamp(2.8rem,7vw,5.5rem); font-weight:900; color:var(--cream); opacity:0; animation:fadeUp 0.9s 0.5s forwards; }
+  .hero-title em { font-style:italic; color:var(--gold); }
+  .hero-sub { font-family:'Fraunces',serif; font-size:clamp(1rem,2.5vw,1.3rem); color:rgba(250,247,240,0.5); margin-top:20px; line-height:1.7; opacity:0; animation:fadeUp 0.8s 0.7s forwards; }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* SEARCH BAR */
+  .search-zone { max-width:700px; margin:0 auto; padding:60px 40px 0; }
+  .search-box {
+    position:relative; margin-bottom:20px;
+  }
+  .search-box input {
+    width:100%; padding:18px 24px 18px 56px;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(212,168,67,0.2);
+    border-radius:100px; color:var(--cream); font-family:'Inter',sans-serif;
+    font-size:0.95rem; outline:none; transition:border-color 0.3s, background 0.3s;
+    cursor:none;
+  }
+  .search-box input::placeholder { color:rgba(250,247,240,0.25); }
+  .search-box input:focus { border-color:rgba(212,168,67,0.5); background:rgba(255,255,255,0.05); }
+  .search-icon {
+    position:absolute; left:20px; top:50%; transform:translateY(-50%);
+    color:rgba(212,168,67,0.4); font-size:1.1rem; pointer-events:none;
+  }
+
+  /* FILTER CHIPS */
+  .house-filters { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:0 40px 0; max-width:700px; margin:0 auto; }
+  .house-chip {
+    font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase;
+    padding:7px 18px; border-radius:100px; border:1px solid rgba(212,168,67,0.15);
+    background:transparent; color:rgba(250,247,240,0.35); cursor:none; transition:all 0.3s;
+  }
+  .house-chip:hover { border-color:rgba(212,168,67,0.3); color:rgba(250,247,240,0.6); }
+  .house-chip.active { background:rgba(212,168,67,0.1); border-color:var(--gold); color:var(--gold); }
+
+  /* STATS BAR */
+  .stats-bar {
+    max-width:1100px; margin:40px auto 0; padding:0 40px;
+    display:flex; gap:4px; align-items:center;
+  }
+  .stats-count {
+    font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase;
+    color:rgba(250,247,240,0.3);
+  }
+  .stats-count span { color:var(--gold); font-weight:500; }
+  .stats-sort {
+    margin-left:auto; display:flex; align-items:center; gap:8px;
+    font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(250,247,240,0.25);
+  }
+  .sort-btn {
+    background:transparent; border:none; color:rgba(250,247,240,0.3); font-size:0.65rem;
+    letter-spacing:0.15em; text-transform:uppercase; cursor:none; padding:4px 10px;
+    border-radius:100px; border:1px solid transparent; transition:all 0.3s;
+  }
+  .sort-btn:hover { color:var(--gold-light); border-color:rgba(212,168,67,0.2); }
+  .sort-btn.active { color:var(--gold); border-color:rgba(212,168,67,0.3); }
+
+  /* GRID */
+  .alumni-grid {
+    max-width:1100px; margin:24px auto 0;
+    padding:0 40px 100px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:20px;
+  }
+
+  /* CARD */
+  .alumni-card {
+    background:rgba(255,255,255,0.02); border:1px solid rgba(212,168,67,0.1);
+    border-radius:16px; padding:28px 24px;
+    transition:transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, box-shadow 0.4s;
+    display:flex; flex-direction:column; gap:12px;
+    opacity:1;
+  }
+  .alumni-card:hover {
+    transform:translateY(-5px);
+    border-color:rgba(212,168,67,0.28);
+    box-shadow:0 18px 50px rgba(0,0,0,0.35), 0 0 25px rgba(212,168,67,0.04);
+  }
+  .alumni-card.hidden { display:none; }
+
+  .card-avatar {
+    width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700;
+    color:var(--ink); flex-shrink:0;
+  }
+  .card-top { display:flex; align-items:center; gap:14px; }
+  .card-name {
+    font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700;
+    color:var(--cream); line-height:1.2;
+  }
+  .card-house {
+    font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase;
+    color:rgba(212,168,67,0.5); margin-top:3px;
+  }
+  .card-aspiration {
+    font-family:'Fraunces',serif; font-size:1rem;
+    color:rgba(250,247,240,0.45); line-height:1.65;
+    border-left:2px solid rgba(212,168,67,0.2); padding-left:12px;
+    font-style:italic;
+  }
+  .card-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .card-tag {
+    font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase;
+    padding:4px 10px; border-radius:100px;
+    background:rgba(212,168,67,0.06); color:rgba(212,168,67,0.5);
+    border:1px solid rgba(212,168,67,0.12);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    grid-column:1/-1; text-align:center; padding:80px 20px;
+    display:none;
+  }
+  .empty-state.show { display:block; }
+  .empty-state-icon { font-size:3rem; margin-bottom:16px; opacity:0.4; }
+  .empty-state-title { font-family:'Fraunces',serif; font-size:1.5rem; font-style:italic; color:rgba(250,247,240,0.3); margin-bottom:8px; }
+  .empty-state-sub { font-family:'Fraunces',serif; font-size:1rem; color:rgba(250,247,240,0.2); }
+
+  /* ADD YOUR NAME CTA */
+  .add-cta {
+    max-width:1100px; margin:0 auto 40px; padding:0 40px;
+  }
+  .add-cta-inner {
+    background:rgba(212,168,67,0.04); border:1px dashed rgba(212,168,67,0.2);
+    border-radius:16px; padding:30px 32px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .add-cta-text { flex:1; }
+  .add-cta-title { font-family:'Fraunces',serif; font-size:1.1rem; font-style:italic; color:rgba(250,247,240,0.5); margin-bottom:5px; }
+  .add-cta-sub { font-size:0.78rem; color:rgba(250,247,240,0.25); letter-spacing:0.05em; }
+  .add-cta-btn {
+    display:inline-block; padding:12px 28px; border-radius:100px;
+    border:1px solid rgba(212,168,67,0.3); color:var(--gold);
+    font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase;
+    text-decoration:none; transition:all 0.3s; cursor:none; white-space:nowrap;
+  }
+  .add-cta-btn:hover { background:rgba(212,168,67,0.1); border-color:var(--gold); transform:translateY(-1px); }
+
+  /* FOOTER */
+  footer { background:#05101C; border-top:1px solid rgba(212,168,67,0.08); padding:60px 40px 40px; text-align:center; }
+  .footer-logo { font-family:'Fraunces',serif; font-size:1.8rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; margin-bottom:10px; }
+  .footer-tagline { font-family:'Fraunces',serif; font-style:italic; font-size:1rem; color:rgba(250,247,240,0.35); margin-bottom:30px; }
+  .footer-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:28px; margin-bottom:32px; }
+  .footer-nav a { font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(250,247,240,0.35); text-decoration:none; transition:color 0.3s; }
+  .footer-nav a:hover { color:var(--gold); }
+  .footer-legal { border-top:1px solid rgba(212,168,67,0.06); padding-top:28px; }
+  .footer-legal-links { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-bottom:14px; }
+  .footer-legal-links a { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(212,168,67,0.5); text-decoration:none; transition:color 0.3s; }
+  .footer-legal-links a:hover { color:var(--gold); }
+  .sep { color:rgba(212,168,67,0.2); }
+  .footer-copyright { font-size:0.72rem; color:rgba(250,247,240,0.2); line-height:1.7; margin-bottom:8px; }
+  .footer-bottom { font-size:0.7rem; color:rgba(250,247,240,0.18); }
+
+  @media (max-width:768px) {
+    nav#mainNav { padding:18px 24px; } nav#mainNav.scrolled { padding:12px 24px; }
+    .nav-links { display:none; } .hamburger { display:flex; }
+    .search-zone { padding:50px 20px 0; }
+    .house-filters { padding:0 20px; }
+    .alumni-grid { padding:0 20px 80px; grid-template-columns:1fr; }
+    .stats-bar { padding:0 20px; }
+    .add-cta { padding:0 20px; }
+  }
+</style>
+</head>
+<body>
+<div id="pageTransition"></div>
+<div id="magnetCursor"></div>
+<div id="magnetTrail"></div>
+<div id="scrollBar"></div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Shakuntalites</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="index.html#teachers">Teachers</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="alumni.html" class="active">Alumni</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="gallery.html" onclick="closeMobileMenu()">Gallery</a>
+  <a href="alumni.html" onclick="closeMobileMenu()">Alumni</a>
+  <a href="events.html" onclick="closeMobileMenu()">Events</a>
+  <a href="faq.html" onclick="closeMobileMenu()">FAQ</a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="grain-overlay"></div>
+  <div class="hero-content">
+    <span class="eyebrow">Batch of 2025–26</span>
+    <h1 class="hero-title">Alumni <em>Directory</em></h1>
+    <p class="hero-sub">Every Shakuntalite who passed through these halls — their dreams, their houses, their stories.</p>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-zone fade-up">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search by name, aspiration, or tag…" oninput="filterAlumni()" autocomplete="off"/>
+  </div>
+</div>
+
+<!-- HOUSE FILTERS -->
+<div class="house-filters fade-up">
+  <button class="house-chip active" onclick="setHouse('all',this)">All Houses</button>
+  <button class="house-chip" onclick="setHouse('Savitri',this)">🔴 Savitri</button>
+  <button class="house-chip" onclick="setHouse('Gargi',this)">🔵 Gargi</button>
+  <button class="house-chip" onclick="setHouse('Maitreyi',this)">🟢 Maitreyi</button>
+  <button class="house-chip" onclick="setHouse('Lopamudra',this)">🟡 Lopamudra</button>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar fade-up">
+  <p class="stats-count">Showing <span id="visibleCount">24</span> of <span id="totalCount">24</span> Shakuntalites</p>
+  <div class="stats-sort">
+    <span>Sort:</span>
+    <button class="sort-btn active" onclick="sortAlumni('name',this)">A–Z</button>
+    <button class="sort-btn" onclick="sortAlumni('house',this)">House</button>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="alumni-grid" id="alumniGrid">
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon">🔍</div>
+    <div class="empty-state-title">No one found</div>
+    <p class="empty-state-sub">Try a different name or clear the filters</p>
+  </div>
+</div>
+
+<!-- ADD CTA -->
+<div class="add-cta fade-up">
+  <div class="add-cta-inner">
+    <div class="add-cta-text">
+      <div class="add-cta-title">Are you a Shakuntalite not yet on this list?</div>
+      <div class="add-cta-sub">Send us your name, house, and a short aspiration — we'll add you.</div>
+    </div>
+    <a href="contact.html" class="add-cta-btn">Add Your Name →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Shakuntalites</div>
+  <p class="footer-tagline">Class of 2025–26 · Forever in each other's hearts</p>
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="alumni.html">Alumni</a>
+    <a href="events.html">Events</a>
+    <a href="faq.html">FAQ</a>
+    <a href="index.html#teachers">Teachers</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="footer-legal">
+    <div class="footer-legal-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <span class="sep">·</span>
+      <a href="terms.html">Terms of Use</a>
+      <span class="sep">·</span>
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="color:rgba(212,168,67,0.5);text-decoration:none;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;">Back to Top ↑</a>
+    </div>
+    <p class="footer-copyright">© 2026 Shakuntalites — शाकुन्तलम् विद्यालय, Banasthali Vidhyapeeth, Rajasthan – 304022. All rights reserved.</p>
+    <div class="footer-bottom">Made with ❤️ by <strong style="color:rgba(250,247,240,0.35)">Lukveer Singh</strong> &amp; <strong style="color:rgba(250,247,240,0.35)">Rohit Yadav</strong></div>
+  </div>
+</footer>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+var ALUMNI = [
+  { name:"Aarav Sharma",    house:"Savitri",   initials:"A", color:"#C0392B", aspiration:"Wants to study aerospace engineering and one day design rockets.", tags:["Science","Music"] },
+  { name:"Priya Mehta",     house:"Gargi",     initials:"P", color:"#2980B9", aspiration:"Dreaming of becoming a journalist who tells stories that matter.", tags:["Writing","Debate"] },
+  { name:"Rohan Verma",     house:"Maitreyi",  initials:"R", color:"#27AE60", aspiration:"Aspires to become a civil servant and serve the country.", tags:["Sports","Leadership"] },
+  { name:"Ananya Singh",    house:"Lopamudra", initials:"A", color:"#D4A843", aspiration:"Plans to pursue fine arts and open her own studio someday.", tags:["Art","Dance"] },
+  { name:"Vikram Patel",    house:"Savitri",   initials:"V", color:"#C0392B", aspiration:"Wants to build sustainable architecture for Indian villages.", tags:["Design","Environment"] },
+  { name:"Kavya Nair",      house:"Gargi",     initials:"K", color:"#2980B9", aspiration:"Passionate about medicine — dreams of becoming a paediatric surgeon.", tags:["Science","Volunteering"] },
+  { name:"Arjun Yadav",     house:"Maitreyi",  initials:"A", color:"#27AE60", aspiration:"Planning to pursue economics and work in international development.", tags:["Economics","Cricket"] },
+  { name:"Sneha Gupta",     house:"Lopamudra", initials:"S", color:"#D4A843", aspiration:"Wants to be a classical vocalist and keep Indian music alive.", tags:["Music","Culture"] },
+  { name:"Ishaan Kumar",    house:"Savitri",   initials:"I", color:"#C0392B", aspiration:"Loves coding and wants to build tech startups that solve real problems.", tags:["Tech","Entrepreneurship"] },
+  { name:"Diya Kapoor",     house:"Gargi",     initials:"D", color:"#2980B9", aspiration:"Dreams of becoming a diplomat and representing India on the world stage.", tags:["Debate","Languages"] },
+  { name:"Aditya Rao",      house:"Maitreyi",  initials:"A", color:"#27AE60", aspiration:"Wants to become a wildlife photographer and document India's biodiversity.", tags:["Photography","Nature"] },
+  { name:"Meera Joshi",     house:"Lopamudra", initials:"M", color:"#D4A843", aspiration:"Aspires to lead research in neuroscience and understand the human mind.", tags:["Science","Reading"] },
+  { name:"Karan Mishra",    house:"Savitri",   initials:"K", color:"#C0392B", aspiration:"Plans to become a barrister and fight for human rights law.", tags:["Law","Basketball"] },
+  { name:"Tara Bose",       house:"Gargi",     initials:"T", color:"#2980B9", aspiration:"Passionate about theatre and wants to bring Indian stories to global stages.", tags:["Drama","Dance"] },
+  { name:"Siddharth Jain",  house:"Maitreyi",  initials:"S", color:"#27AE60", aspiration:"Keen on finance and wants to work in impact investing.", tags:["Finance","Debate"] },
+  { name:"Nisha Reddy",     house:"Lopamudra", initials:"N", color:"#D4A843", aspiration:"Wants to become a chef and put regional Indian cuisine on the world map.", tags:["Food","Travel"] },
+  { name:"Parth Agarwal",   house:"Savitri",   initials:"P", color:"#C0392B", aspiration:"Dreaming of going to ISRO and contributing to India's space programme.", tags:["Science","Astronomy"] },
+  { name:"Riya Trivedi",    house:"Gargi",     initials:"R", color:"#2980B9", aspiration:"Wants to pursue psychology and help young people navigate mental health.", tags:["Psychology","Yoga"] },
+  { name:"Ayush Pandey",    house:"Maitreyi",  initials:"A", color:"#27AE60", aspiration:"Aspires to become a documentary filmmaker documenting forgotten histories.", tags:["Film","History"] },
+  { name:"Shruti Desai",    house:"Lopamudra", initials:"S", color:"#D4A843", aspiration:"Plans to become a sustainable fashion designer and change the industry.", tags:["Fashion","Design"] },
+  { name:"Lukveer Singh",   house:"Savitri",   initials:"L", color:"#C0392B", aspiration:"Built this very website — wants to craft digital experiences that outlast him.", tags:["Design","Code","Creator"] },
+  { name:"Rohit Yadav",     house:"Gargi",     initials:"R", color:"#2980B9", aspiration:"The vision behind Shakuntalites — wants to preserve memories that matter.", tags:["Vision","Community"] },
+  { name:"Pooja Saxena",    house:"Maitreyi",  initials:"P", color:"#27AE60", aspiration:"Wants to become an environmental lawyer and fight climate policy battles.", tags:["Law","Environment"] },
+  { name:"Manav Srivastava",house:"Lopamudra", initials:"M", color:"#D4A843", aspiration:"Passionate about robotics and wants to build assistive tech for differently-abled people.", tags:["Robotics","Tech"] },
+];
+
+var currentHouse = 'all';
+var currentSort  = 'name';
+
+function buildCards(data) {
+  var grid = document.getElementById('alumniGrid');
+  var empty = document.getElementById('emptyState');
+  // Remove existing cards only
+  grid.querySelectorAll('.alumni-card').forEach(function(c) { c.remove(); });
+
+  if (data.length === 0) {
+    empty.classList.add('show');
+  } else {
+    empty.classList.remove('show');
+    data.forEach(function(a) {
+      var card = document.createElement('div');
+      card.className = 'alumni-card';
+      card.dataset.name  = a.name.toLowerCase();
+      card.dataset.house = a.house;
+      card.dataset.tags  = a.tags.join(' ').toLowerCase();
+      card.dataset.aspir = a.aspiration.toLowerCase();
+      card.innerHTML =
+        '<div class="card-top">' +
+          '<div class="card-avatar" style="background:'+a.color+'22;border:1px solid '+a.color+'44;color:'+a.color+';">'+a.initials+'</div>' +
+          '<div><div class="card-name">'+a.name+'</div>' +
+          '<div class="card-house">'+a.house+' House</div></div>' +
+        '</div>' +
+        '<p class="card-aspiration">'+a.aspiration+'</p>' +
+        '<div class="card-tags">'+ a.tags.map(function(t){ return '<span class="card-tag">'+t+'</span>'; }).join('') +'</div>';
+      grid.appendChild(card);
+    });
+  }
+  updateCount(data.length);
+}
+
+function getFiltered() {
+  var q = document.getElementById('searchInput').value.toLowerCase().trim();
+  return ALUMNI.filter(function(a) {
+    var houseOk = currentHouse === 'all' || a.house === currentHouse;
+    var searchOk = !q || a.name.toLowerCase().includes(q) || a.aspiration.toLowerCase().includes(q) || a.tags.join(' ').toLowerCase().includes(q);
+    return houseOk && searchOk;
+  });
+}
+
+function getSorted(data) {
+  return data.slice().sort(function(a, b) {
+    if (currentSort === 'name') return a.name.localeCompare(b.name);
+    if (currentSort === 'house') return a.house.localeCompare(b.house) || a.name.localeCompare(b.name);
+    return 0;
+  });
+}
+
+function refresh() { buildCards(getSorted(getFiltered())); }
+
+function filterAlumni() { refresh(); }
+function setHouse(h, btn) {
+  currentHouse = h;
+  document.querySelectorAll('.house-chip').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  refresh();
+}
+function sortAlumni(s, btn) {
+  currentSort = s;
+  document.querySelectorAll('.sort-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  refresh();
+}
+function updateCount(n) {
+  document.getElementById('visibleCount').textContent = n;
+  document.getElementById('totalCount').textContent = ALUMNI.length;
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', function() { refresh(); });
+
+// ─── BOILERPLATE ─────────────────────────────────────────
+window.addEventListener('scroll', function() {
+  var st=window.scrollY, dh=document.body.scrollHeight-window.innerHeight;
+  document.getElementById('scrollBar').style.width=((st/dh)*100)+'%';
+  var nav=document.getElementById('mainNav');
+  if (st>60) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+}, { passive:true });
+
+window.addEventListener('load', function() {
+  var pt=document.getElementById('pageTransition');
+  pt.classList.add('reveal-in');
+  setTimeout(function() {
+    pt.style.transition='clip-path 1s cubic-bezier(0.77,0,0.18,1)';
+    pt.classList.remove('reveal-in'); pt.classList.add('reveal-out');
+    setTimeout(function() { pt.style.display='none'; }, 1000);
+  }, 400);
+});
+
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+}, { threshold:0.08 });
+document.querySelectorAll('.fade-up').forEach(function(el) { obs.observe(el); });
+
+var magCursor=document.getElementById('magnetCursor'), magTrail=document.getElementById('magnetTrail');
+var mcx=0,mcy=0,mtx=0,mty=0,cv=false;
+var isTD=window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+if (!isTD) {
+  document.addEventListener('mousemove', function(e) {
+    mcx=e.clientX; mcy=e.clientY;
+    if (!cv) { cv=true; magCursor.classList.add('visible'); magTrail.classList.add('visible'); }
+    magCursor.style.left=mcx+'px'; magCursor.style.top=mcy+'px';
+  });
+  (function loop() { mtx+=(mcx-mtx)*0.08; mty+=(mcy-mty)*0.08; magTrail.style.left=mtx+'px'; magTrail.style.top=mty+'px'; requestAnimationFrame(loop); })();
+  document.addEventListener('mouseover', function(e) {
+    if (e.target.matches('a,button,input,.alumni-card')) magCursor.classList.add('hovering');
+    else magCursor.classList.remove('hovering');
+  });
+}
+function toggleMobileMenu() {
+  var m=document.getElementById('mobileMenu'),b=document.getElementById('hamburger');
+  m.classList.toggle('open'); b.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
