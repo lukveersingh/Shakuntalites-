@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ — Shakuntalites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<meta name="theme-color" content="#0F1B2D"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/></noscript>
+<style>
+  :root {
+    --gold: #D4A843;
+    --gold-light: #F0C96B;
+    --gold-pale: #FDF3DC;
+    --cream: #FAF7F0;
+    --brown-dark: #0B1E33;
+    --brown-mid: #1B3A57;
+    --brown-light: #4A7291;
+    --ink: #0F1B2D;
+    --film-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  #pageTransition {
+    position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+    background: linear-gradient(135deg, #05101C, #0F1B2D);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.8s cubic-bezier(0.77,0,0.18,1);
+  }
+  #pageTransition.reveal-in  { clip-path: inset(0 0 0% 0); }
+  #pageTransition.reveal-out { clip-path: inset(100% 0 0% 0); }
+
+  .cinematic-reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  }
+  .cinematic-reveal.in-view { opacity: 1; transform: none; }
+
+  #magnetCursor {
+    position: fixed; top: 0; left: 0;
+    width: clamp(24px,3vw,40px); height: clamp(24px,3vw,40px);
+    border-radius: 50%; background: transparent;
+    border: 2px solid var(--gold); pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%); opacity: 0;
+    transition: width 0.35s cubic-bezier(0.22,1,0.36,1), height 0.35s, opacity 0.3s, border-color 0.3s;
+    box-shadow: 0 0 10px rgba(212,168,67,0.3);
+  }
+  #magnetCursor.visible { opacity: 1; }
+  #magnetCursor.hovering { width: clamp(40px,5vw,64px); height: clamp(40px,5vw,64px); border-color: var(--gold-light); }
+  @media (hover:none) and (pointer:coarse) { #magnetCursor, #magnetTrail { display:none !important; } }
+  #magnetTrail {
+    position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--gold-light); pointer-events: none;
+    z-index: 9998; transform: translate(-50%,-50%); opacity: 0; transition: opacity 0.3s;
+  }
+  #magnetTrail.visible { opacity: 0.7; }
+
+  #scrollBar {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: linear-gradient(90deg,#3D5D7A,#D4A843,#F0C96B,#D4A843);
+    background-size: 200% 100%; animation: gradShift 3s linear infinite;
+    z-index: 9999; transition: width 0.1s linear;
+  }
+  @keyframes gradShift { 0%{background-position:0% 0} 100%{background-position:200% 0} }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--ink); color: var(--cream); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+  @media (hover:none) and (pointer:coarse) { body { cursor:auto !important; } }
+
+  /* NAV — identical to other pages */
+  nav#mainNav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 24px 60px; display: flex; justify-content: space-between; align-items: center;
+    background: transparent !important; transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  nav#mainNav.scrolled {
+    background: rgba(10,7,3,0.85) !important; backdrop-filter: blur(20px);
+    padding: 14px 60px; border-bottom: 1px solid rgba(212,168,67,0.08);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  }
+  .nav-logo {
+    font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700;
+    color: var(--gold) !important; -webkit-text-fill-color: var(--gold) !important;
+    letter-spacing: 0.08em; text-decoration: none; position: relative; z-index: 101;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), text-shadow 0.3s !important; display: inline-block;
+  }
+  .nav-logo:hover { transform: scale(1.05) translateY(-1px) !important; }
+  .nav-links { display:flex; gap:40px; list-style:none; }
+  .nav-links a {
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(250,247,240,0.5); text-decoration: none; transition: all 0.3s; position: relative; padding-bottom: 4px;
+  }
+  .nav-links a::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:1px; background:var(--gold); transition:all 0.3s ease; transform:translateX(-50%); }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-links a:hover::after { width: 100%; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:none; padding:8px; border:none; background:transparent; z-index:200; }
+  .hamburger span { display:block; width:24px; height:2px; background:var(--gold); border-radius:2px; transition:all 0.35s; }
+  .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  .mobile-menu {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(8,5,2,0.97); backdrop-filter:blur(20px);
+    z-index:150; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    opacity:0; pointer-events:none; transition:opacity 0.4s ease;
+  }
+  .mobile-menu.open { opacity:1; pointer-events:all; }
+  .mobile-menu a {
+    font-family:'Fraunces',serif; font-size:clamp(2rem,8vw,3rem); font-style:italic;
+    color:rgba(250,247,240,0.35); text-decoration:none; letter-spacing:0.04em;
+    transform:translateY(20px); opacity:0; transition:color 0.3s, transform 0.5s, opacity 0.5s;
+  }
+  .mobile-menu.open a { opacity:1; transform:translateY(0); }
+  .mobile-menu.open a:nth-child(1){transition-delay:0.05s} .mobile-menu.open a:nth-child(2){transition-delay:0.10s}
+  .mobile-menu.open a:nth-child(3){transition-delay:0.15s} .mobile-menu.open a:nth-child(4){transition-delay:0.20s}
+  .mobile-menu.open a:nth-child(5){transition-delay:0.25s} .mobile-menu.open a:nth-child(6){transition-delay:0.30s}
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-menu-close {
+    position:absolute; top:28px; right:28px; width:44px; height:44px; border-radius:50%;
+    border:1px solid rgba(212,168,67,0.25); background:rgba(212,168,67,0.06);
+    color:var(--gold); font-size:1.3rem; display:flex; align-items:center; justify-content:center;
+    cursor:none; transition:background 0.3s, transform 0.3s;
+  }
+  .mobile-menu-close:hover { background:rgba(212,168,67,0.15); transform:rotate(90deg); }
+
+  /* HERO */
+  .page-hero {
+    position: relative; min-height: 55vh;
+    display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden;
+  }
+  .page-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 40%, #3A2008 0%, #0F1B2D 70%); }
+  .grain-overlay { display: none !important; position: absolute; inset: 0; background-image: var(--film-grain); background-size: 150px; opacity: 0.4; mix-blend-mode: overlay; pointer-events: none; }
+  .page-hero-content { position: relative; z-index: 2; padding: 40px 20px; }
+  .page-eyebrow {
+    display: inline-block; font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px; padding: 6px 18px;
+    border: 1px solid rgba(212,168,67,0.3); border-radius: 100px; background: rgba(212,168,67,0.06);
+    opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s 0.3s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .page-hero-title {
+    font-family: 'Fraunces', serif; font-size: clamp(2.8rem,7vw,5.5rem);
+    font-weight: 900; line-height: 1.05; color: var(--cream);
+    opacity: 0; transform: translateY(30px); animation: fadeUp 0.9s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .page-hero-title em { font-style: italic; color: var(--gold); }
+  .page-hero-sub {
+    font-family: 'Fraunces', serif; font-size: clamp(1rem,2.5vw,1.3rem);
+    color: rgba(250,247,240,0.5); margin-top: 20px; line-height: 1.7;
+    opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* FAQ LAYOUT */
+  .faq-wrapper { max-width: 860px; margin: 0 auto; padding: 80px 40px 120px; }
+
+  .faq-category { margin-bottom: 70px; }
+  .faq-category-label {
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 14px; margin-bottom: 30px;
+  }
+  .faq-category-label::after { content:''; flex: 1; height: 1px; background: rgba(212,168,67,0.15); }
+  .faq-category-title {
+    font-family: 'Fraunces', serif; font-size: clamp(1.4rem,3vw,2rem);
+    font-weight: 700; color: var(--cream); margin-bottom: 30px;
+  }
+
+  /* ACCORDION */
+  .faq-item {
+    border-bottom: 1px solid rgba(212,168,67,0.1);
+    overflow: hidden;
+  }
+  .faq-item:first-of-type { border-top: 1px solid rgba(212,168,67,0.1); }
+  .faq-question {
+    width: 100%; background: transparent; border: none; color: var(--cream);
+    font-family: 'Inter', sans-serif; font-size: clamp(0.95rem,2vw,1.08rem);
+    font-weight: 500; text-align: left; padding: 24px 0;
+    cursor: none; display: flex; justify-content: space-between; align-items: center;
+    gap: 20px; transition: color 0.3s;
+  }
+  .faq-question:hover { color: var(--gold-light); }
+  .faq-question.open { color: var(--gold); }
+  .faq-icon {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(212,168,67,0.3); color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 300; line-height: 1;
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), background 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-question.open .faq-icon {
+    transform: rotate(45deg); background: rgba(212,168,67,0.12); border-color: rgba(212,168,67,0.5);
+  }
+  .faq-answer {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.22,1,0.36,1), padding 0.4s ease;
+    padding: 0 0;
+  }
+  .faq-answer.open { max-height: 600px; padding-bottom: 24px; }
+  .faq-answer p, .faq-answer li {
+    font-family: 'Fraunces', serif; font-size: 1.12rem;
+    color: rgba(250,247,240,0.6); line-height: 1.85; margin-bottom: 10px;
+  }
+  .faq-answer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(212,168,67,0.3); transition: color 0.3s; }
+  .faq-answer a:hover { color: var(--gold-light); }
+  .faq-answer ul { list-style: none; margin: 8px 0 10px; }
+  .faq-answer ul li { padding-left: 20px; position: relative; }
+  .faq-answer ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-size: 0.85rem; }
+
+  /* CTA */
+  .faq-cta {
+    margin-top: 60px; text-align: center; padding: 60px 40px;
+    background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.12);
+    border-radius: 20px;
+  }
+  .faq-cta h3 {
+    font-family: 'Fraunces', serif; font-size: clamp(1.5rem,3vw,2.2rem);
+    font-style: italic; color: var(--cream); margin-bottom: 14px;
+  }
+  .faq-cta p {
+    font-family: 'Fraunces', serif; font-size: 1.1rem;
+    color: rgba(250,247,240,0.5); margin-bottom: 30px; line-height: 1.7;
+  }
+  .faq-cta-btn {
+    display: inline-block; padding: 14px 36px;
+    background: transparent; border: 1px solid rgba(212,168,67,0.4);
+    color: var(--gold); font-family: 'Inter', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    text-decoration: none; border-radius: 100px;
+    transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.3s;
+    cursor: none;
+  }
+  .faq-cta-btn:hover {
+    background: rgba(212,168,67,0.12); border-color: var(--gold);
+    color: var(--gold-light); transform: translateY(-2px);
+  }
+
+  /* FOOTER */
+  footer { background: #05101C; border-top: 1px solid rgba(212,168,67,0.08); padding: 60px 40px 40px; text-align: center; }
+  .footer-logo { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 10px; }
+  .footer-tagline { font-family: 'Fraunces', serif; font-style: italic; font-size: 1rem; color: rgba(250,247,240,0.35); margin-bottom: 30px; }
+  .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; margin-bottom: 32px; }
+  .footer-nav a { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,247,240,0.35); text-decoration: none; transition: color 0.3s; }
+  .footer-nav a:hover { color: var(--gold); }
+  .footer-legal { border-top: 1px solid rgba(212,168,67,0.06); padding-top: 28px; }
+  .footer-legal-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 14px; }
+  .footer-legal-links a { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(212,168,67,0.5); text-decoration: none; transition: color 0.3s; }
+  .footer-legal-links a:hover { color: var(--gold); }
+  .sep { color: rgba(212,168,67,0.2); }
+  .footer-copyright { font-size: 0.72rem; color: rgba(250,247,240,0.2); line-height: 1.7; margin-bottom: 8px; }
+  .footer-bottom { font-size: 0.7rem; color: rgba(250,247,240,0.18); }
+
+  @media (max-width: 768px) {
+    nav#mainNav { padding: 18px 24px; }
+    nav#mainNav.scrolled { padding: 12px 24px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .faq-wrapper { padding: 60px 24px 80px; }
+    .faq-cta { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+<div id="pageTransition"></div>
+<div id="magnetCursor"></div>
+<div id="magnetTrail"></div>
+<div id="scrollBar"></div>
+
+<nav id="mainNav">
+  <a href="index.html" class="nav-logo">Shakuntalites</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="index.html#teachers">Teachers</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="alumni.html">Alumni</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="faq.html" class="active">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="gallery.html" onclick="closeMobileMenu()">Gallery</a>
+  <a href="alumni.html" onclick="closeMobileMenu()">Alumni</a>
+  <a href="events.html" onclick="closeMobileMenu()">Events</a>
+  <a href="faq.html" onclick="closeMobileMenu()">FAQ</a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="grain-overlay"></div>
+  <div class="page-hero-content">
+    <span class="page-eyebrow">Help</span>
+    <h1 class="page-hero-title">Frequently <em>Asked</em></h1>
+    <p class="page-hero-sub">Everything you might want to know about this site and how it works.</p>
+  </div>
+</section>
+
+<div class="faq-wrapper">
+
+  <!-- CATEGORY 1 -->
+  <div class="faq-category cinematic-reveal">
+    <div class="faq-category-label">01 — The Site</div>
+    <h2 class="faq-category-title">About Shakuntalites</h2>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What is Shakuntalites? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Shakuntalites is the official website of शाकुन्तलम् विद्यालय, Banasthali Vidyapith. It shares information about the school, its students and teachers, and preserves photographs and stories from our events — so that these years are never forgotten.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Who built this website? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>This site was designed and developed by <strong>Lukveer Singh</strong> and <strong>Rohit Yadav</strong> — two Shakuntalites who wanted to build something lasting for their batch. It is entirely student-made, non-commercial, and built with love.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is this an official school website? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>No. Shakuntalites is an independent, student-run project. It is not affiliated with or officially endorsed by Banasthali Vidyapith. For the official school website, please visit <a href="https://banasthali.org" target="_blank" rel="noopener">banasthali.org</a>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Will this site remain available permanently? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>We have built this site on GitHub Pages, which is free and reliable for long-term hosting. We intend to keep it online for as long as possible so that Shakuntalites can return to it for years to come. There are no plans to take it down.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY 2 -->
+  <div class="faq-category cinematic-reveal">
+    <div class="faq-category-label">02 — Gallery & Content</div>
+    <h2 class="faq-category-title">Photos &amp; Memories</h2>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How can I submit a photo for the gallery? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Reach out to us through the <a href="contact.html">contact page</a> or via our WhatsApp group. Share your photo along with the event name, year, and any caption you'd like. We'll add it to the appropriate album.</p>
+        <p>Please make sure you have the consent of everyone visible in the photo before submitting.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I request removal of a photo I appear in? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Absolutely. We respect your right to control how you appear online. Contact us through the <a href="contact.html">contact page</a> with details of the photo (which album, approximate position) and we will remove it promptly — no questions asked.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        I notice a photo is wrongly captioned or attributed. How do I fix it? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Please write to us via the <a href="contact.html">contact page</a> describing the error. We will correct it as soon as possible. Accuracy matters — we want every memory to be represented truthfully.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I download photos from the gallery? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Photos on this site are shared for personal, non-commercial viewing by Shakuntalites. Please do not redistribute or use photos without the consent of those who appear in them. If you need a high-quality copy of a specific photo, contact us and we will try to help.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY 3 -->
+  <div class="faq-category cinematic-reveal">
+    <div class="faq-category-label">03 — Technical</div>
+    <h2 class="faq-category-title">Technical Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        The site looks broken or images aren't loading. What should I do? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Try a hard refresh (Ctrl+Shift+R on desktop, or clear your browser cache). If the problem persists, it may be a temporary GitHub Pages outage. You can also contact us so we're aware of the issue.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Does this site work on mobile? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes. The site is fully responsive and designed to work beautifully on phones, tablets, and desktops. Some animation effects are reduced on touch devices to preserve performance.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is the site open source? <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>The code is hosted on GitHub under the Shakuntalites organisation. Feel free to explore it, though please respect the personal content (photos, messages, names) shared by real people on the site.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="faq-cta cinematic-reveal">
+    <h3>Still have a question?</h3>
+    <p>We're real people — fellow Shakuntalites — and we'd love to hear from you.</p>
+    <a href="contact.html" class="faq-cta-btn">Get in Touch</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">Shakuntalites</div>
+  <p class="footer-tagline">Class of 2025–26 · Forever in each other's hearts</p>
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="alumni.html">Alumni</a>
+    <a href="events.html">Events</a>
+    <a href="faq.html">FAQ</a>
+    <a href="index.html#teachers">Teachers</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="footer-legal">
+    <div class="footer-legal-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <span class="sep">·</span>
+      <a href="terms.html">Terms of Use</a>
+      <span class="sep">·</span>
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="color:rgba(212,168,67,0.5);text-decoration:none;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;">Back to Top ↑</a>
+    </div>
+    <p class="footer-copyright">© 2026 Shakuntalites — शाकुन्तलम् विद्यालय, Banasthali Vidhyapeeth, Rajasthan – 304022. All rights reserved.</p>
+    <div class="footer-bottom">Made with ❤️ by <strong style="color:rgba(250,247,240,0.35)">Lukveer Singh</strong> &amp; <strong style="color:rgba(250,247,240,0.35)">Rohit Yadav</strong> &nbsp;·&nbsp; May your futures be as bright as your smiles</div>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY;
+    var docHeight = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('scrollBar').style.width = ((scrollTop / docHeight) * 100) + '%';
+    var nav = document.getElementById('mainNav');
+    if (scrollTop > 60) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+  }, { passive: true });
+
+  window.addEventListener('load', function() {
+    var pt = document.getElementById('pageTransition');
+    pt.classList.add('reveal-in');
+    setTimeout(function() {
+      pt.style.transition = 'clip-path 1s cubic-bezier(0.77,0,0.18,1)';
+      pt.classList.remove('reveal-in'); pt.classList.add('reveal-out');
+      setTimeout(function() { pt.style.display = 'none'; }, 1000);
+    }, 400);
+  });
+
+  var cinematicObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.cinematic-reveal').forEach(function(el) { cinematicObs.observe(el); });
+
+  function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    var isOpen = btn.classList.contains('open');
+    // close all
+    document.querySelectorAll('.faq-question.open').forEach(function(b) {
+      b.classList.remove('open'); b.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) { btn.classList.add('open'); answer.classList.add('open'); }
+  }
+
+  var magCursor = document.getElementById('magnetCursor');
+  var magTrail = document.getElementById('magnetTrail');
+  var mcx = 0, mcy = 0, mtx = 0, mty = 0, cursorVisible = false;
+  var isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (!isTouchDevice) {
+    document.addEventListener('mousemove', function(e) {
+      mcx = e.clientX; mcy = e.clientY;
+      if (!cursorVisible) { cursorVisible = true; magCursor.classList.add('visible'); magTrail.classList.add('visible'); }
+      magCursor.style.left = mcx + 'px'; magCursor.style.top = mcy + 'px';
+    });
+    (function animMagTrail() {
+      mtx += (mcx - mtx) * 0.08; mty += (mcy - mty) * 0.08;
+      magTrail.style.left = mtx + 'px'; magTrail.style.top = mty + 'px';
+      requestAnimationFrame(animMagTrail);
+    })();
+    document.querySelectorAll('a, button').forEach(function(el) {
+      el.addEventListener('mouseenter', function() { magCursor.classList.add('hovering'); });
+      el.addEventListener('mouseleave', function() { magCursor.classList.remove('hovering'); });
+    });
+  }
+
+  function toggleMobileMenu() {
+    var menu = document.getElementById('mobileMenu'); var burger = document.getElementById('hamburger');
+    menu.classList.toggle('open'); burger.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>
